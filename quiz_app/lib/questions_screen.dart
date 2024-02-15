@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/components/answer_button.dart';
+import 'package:quiz_app/data/questions.dart';
+import 'package:quiz_app/model/quiz_questions.dart';
 
 class QuestionScreen extends StatefulWidget {
   const QuestionScreen({super.key});
@@ -11,25 +13,43 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen> {
+  var currentQuestionIndex = 0;
+
+  void answerQuestion() {
+    setState(() {
+      currentQuestionIndex += 1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
+    final currentQuestion = questions[currentQuestionIndex];
+    return SizedBox(
       // SizeBox is alternate approach of Center widget
       width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment
-            .center, // if use SizeBox, need to specify maxAxisAlignment
-        children: [
-          Text(
-            'question ...',
-            style: TextStyle(color: Colors.white, fontSize: 22),
-          ),
-          SizedBox(height: 20),
-          AnswerButton('Answer 1'),
-          AnswerButton('Answer 2'),
-          AnswerButton('Answer 3'),
-          AnswerButton('Answer 4'),
-        ],
+      child: Container(
+        margin: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment
+              .center, // if use SizeBox, need to specify maxAxisAlignment
+          crossAxisAlignment: CrossAxisAlignment.stretch, // horizontal
+          children: [
+            Text(
+              currentQuestion.text,
+              style: const TextStyle(color: Colors.white, fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            ...currentQuestion.getShuffledAnswers().map(
+              (answer) {
+                return AnswerButton(
+                  answer: answer,
+                  onTap: answerQuestion,
+                );
+              },
+            )
+          ],
+        ),
       ),
     );
   }
