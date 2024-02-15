@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/data/questions.dart';
 
 import 'package:quiz_app/questions_screen.dart';
+import 'package:quiz_app/result_screen.dart';
 import 'package:quiz_app/welcome_page.dart';
 
 class Quiz extends StatefulWidget {
@@ -12,13 +14,11 @@ class Quiz extends StatefulWidget {
   }
 }
 
-enum ScreenType {
-  welcomeScreen,
-  questionScreen,
-}
+enum ScreenType { welcomeScreen, questionScreen, resultScreen }
 
 class _QuizState extends State<Quiz> {
-  ScreenType? activeScreen;
+  List<String> selectedAnswers = [];
+  ScreenType activeScreen = ScreenType.welcomeScreen;
 
   @override
   void initState() {
@@ -32,8 +32,41 @@ class _QuizState extends State<Quiz> {
     });
   }
 
+  void setAnswers(String answer) {
+    selectedAnswers.add(answer);
+
+    if (selectedAnswers.length == questions.length) {
+      setState(() {
+        activeScreen = ScreenType.resultScreen;
+        selectedAnswers = [];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget activeScreenWidget = WelcomePage(switchScreen);
+    if (activeScreen == ScreenType.questionScreen) {
+      activeScreenWidget = QuestionScreen(onSelectAnswer: setAnswers);
+    }
+
+    if (activeScreen == ScreenType.resultScreen) {
+      activeScreenWidget = const ResultScreen();
+    }
+
+    // switch (activeScreen) {
+    //   case ScreenType.welcomeScreen:
+    //     activeScreenWidget = WelcomePage(switchScreen);
+    //     break;
+    //   case ScreenType.questionScreen:
+    //     activeScreenWidget = QuestionScreen(onSelectAnswer: setAnswers);
+    //     break;
+    //   case ScreenType.resultScreen:
+    //     activeScreenWidget = const ResultScreen();
+    //     print('resultScreen');
+    //     break;
+    // }
+
     return MaterialApp(
       home: Scaffold(
         body: Container(
@@ -43,9 +76,7 @@ class _QuizState extends State<Quiz> {
               Color.fromARGB(255, 130, 7, 152)
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
           ),
-          child: activeScreen == ScreenType.questionScreen
-              ? const QuestionScreen()
-              : WelcomePage(switchScreen),
+          child: activeScreenWidget,
         ),
       ),
     );
