@@ -14,7 +14,11 @@ class Quiz extends StatefulWidget {
   }
 }
 
-enum ScreenType { welcomeScreen, questionScreen, resultScreen }
+enum ScreenType {
+  welcomeScreen,
+  questionScreen,
+  resultScreen,
+}
 
 class _QuizState extends State<Quiz> {
   List<String> selectedAnswers = [];
@@ -32,15 +36,36 @@ class _QuizState extends State<Quiz> {
     });
   }
 
+  List<Map<String, Object>> getSummary() {
+    List<Map<String, Object>> summary = [];
+
+    for (var i = 0; i < selectedAnswers.length; i++) {
+      summary.add({
+        'question_index': i,
+        'question': questions[i].text,
+        'correct_answer': questions[i].answers[0],
+        'chosen_answer': selectedAnswers[i],
+      });
+    }
+
+    return summary;
+  }
+
   void setAnswers(String answer) {
     selectedAnswers.add(answer);
 
     if (selectedAnswers.length == questions.length) {
       setState(() {
         activeScreen = ScreenType.resultScreen;
-        selectedAnswers = [];
       });
     }
+  }
+
+  void startQuiz() {
+    setState(() {
+      activeScreen = ScreenType.welcomeScreen;
+      selectedAnswers = [];
+    });
   }
 
   @override
@@ -51,7 +76,10 @@ class _QuizState extends State<Quiz> {
     }
 
     if (activeScreen == ScreenType.resultScreen) {
-      activeScreenWidget = const ResultScreen();
+      activeScreenWidget = ResultScreen(
+        summary: getSummary(),
+        onTapStartQuiz: startQuiz,
+      );
     }
 
     // switch (activeScreen) {
