@@ -5,32 +5,73 @@ class ResultSummary extends StatelessWidget {
 
   final List<Map<String, Object>> summary;
 
+  bool isAnswerCorrect(Map<String, Object> data) {
+    return data['correct_answer'] == data['chosen_answer'];
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: summary.map((data) {
-        return Row(
-          children: [
-            Text(
-              ((data['question_index'] as int) + 1).toString(),
-              style: const TextStyle(color: Colors.white),
-            ),
-            Expanded(
-              // Expanded:  the child columns will not take more than it's parent widget Row
-              child: Column(
+    return SizedBox(
+      height: 300,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: summary.map((data) {
+            return Container(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
                 children: [
-                  Text(data['question'] as String,
-                      style: const TextStyle(color: Colors.white)),
-                  Text(data['correct_answer'] as String,
-                      style: const TextStyle(color: Colors.white)),
-                  Text(data['chosen_answer'] as String,
-                      style: const TextStyle(color: Colors.white)),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isAnswerCorrect(data)
+                          ? const Color.fromARGB(255, 129, 242, 138)
+                          : Colors.yellow,
+                    ),
+                    child: Text(
+                      ((data['question_index'] as int) + 1).toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    // Expanded:  the child columns will not take more than it's parent widget Row
+                    child: Column(
+                      children: [
+                        Text(
+                          data['question'] as String,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        Text(
+                          data['chosen_answer'] as String,
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 219, 104, 239),
+                              fontSize: 12),
+                          textAlign: TextAlign.left,
+                        ),
+                        Text(
+                          data['correct_answer'] as String,
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 111, 188, 252),
+                              fontSize: 12),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
-            )
-          ],
-        );
-      }).toList(),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }

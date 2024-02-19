@@ -28,8 +28,9 @@ class ResultScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'You have correctly answered $numberOfCorrectAnswers out of $numberOfTotalQuestions',
-              style: const TextStyle(color: Colors.white),
+              'You have correctly answered $numberOfCorrectAnswers out of $numberOfTotalQuestions !',
+              style: const TextStyle(color: Color.fromARGB(255, 234, 212, 249)),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
             ResultSummary(summary: summary),
@@ -37,8 +38,8 @@ class ResultScreen extends StatelessWidget {
               height: 40,
             ),
             TextButton(
-              onPressed: () {},
-              child: const Text('Start Quiz'),
+              onPressed: onTapStartQuiz,
+              child: const Row(children: [Text('Start Quiz')]),
             ),
           ],
         ),
