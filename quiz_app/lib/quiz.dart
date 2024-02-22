@@ -36,7 +36,7 @@ class _QuizState extends State<Quiz> {
     });
   }
 
-  List<Map<String, Object>> getSummary() {
+  List<Map<String, Object>> get summary {
     List<Map<String, Object>> summary = [];
 
     for (var i = 0; i < selectedAnswers.length; i++) {
@@ -77,7 +77,7 @@ class _QuizState extends State<Quiz> {
 
     if (activeScreen == ScreenType.resultScreen) {
       activeScreenWidget = ResultScreen(
-        summary: getSummary(),
+        summary: summary,
         onTapStartQuiz: startQuiz,
       );
     }

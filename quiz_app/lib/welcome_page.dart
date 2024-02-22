@@ -36,13 +36,13 @@ class WelcomePage extends StatelessWidget {
             height: 20,
           ),
           OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
             onPressed: startQuiz,
             icon: const Icon(Icons.arrow_right_alt),
             label: const Text(
               'Start Quiz!',
-              style: TextStyle(
-                color: Color.fromARGB(255, 152, 143, 143),
-              ),
             ),
           ),
         ],

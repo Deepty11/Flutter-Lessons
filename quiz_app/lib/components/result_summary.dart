@@ -12,10 +12,11 @@ class ResultSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 300,
+      height: 400,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: summary.map((data) {
             return Container(
               padding: const EdgeInsets.only(bottom: 4),
@@ -40,6 +41,7 @@ class ResultSummary extends StatelessWidget {
                   Expanded(
                     // Expanded:  the child columns will not take more than it's parent widget Row
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           data['question'] as String,

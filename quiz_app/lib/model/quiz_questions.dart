@@ -6,7 +6,7 @@ class QuizModel {
 
 // method to get shuffled list,
 // so that it does not update the main list
-  List<String> getShuffledAnswers() {
+  List<String> get shuffledAnswers {
     var shuffledList = List.of(answers);
     shuffledList.shuffle();
     return shuffledList;
