@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key});
+  const NewExpense({super.key, required this.onAddExpense});
+
+  final void Function(Expense expense) onAddExpense;
 
   @override
   State<StatefulWidget> createState() {
@@ -38,8 +40,46 @@ class _NewExpenseState extends State<NewExpense> {
 
     setState(() {
       _selectedCategory = value;
-      print(_selectedCategory);
     });
+  }
+
+  void _onSubmit() {
+    final amount = double.tryParse(_amountController.text);
+    //double.tryParse("jj") => null, double.tryParse("1.12") => 1.12
+
+    final isAmountInvalid = amount == null || amount <= 0;
+
+    if (_titleController.text.trim().isEmpty ||
+        isAmountInvalid ||
+        _dateSelected == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Invalid Input'),
+          content: const Text(
+              'Please make sure the valid title, amount or catalog is selected'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+      return;
+    }
+
+    widget.onAddExpense(
+      Expense(
+          title: _titleController.text,
+          amount: amount,
+          date: _dateSelected!,
+          category: _selectedCategory!),
+    );
+
+    Navigator.pop(context);
   }
 
   @override
@@ -52,9 +92,14 @@ class _NewExpenseState extends State<NewExpense> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
       child: Column(
         children: [
+          Text(
+            'Add New Expense',
+            style: GoogleFonts.lato(fontSize: 22),
+            textAlign: TextAlign.left,
+          ),
           TextField(
             controller: _titleController,
             decoration: InputDecoration(
@@ -125,11 +170,8 @@ class _NewExpenseState extends State<NewExpense> {
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
-                onPressed: () {
-                  print(_titleController.text);
-                  print(_amountController.text);
-                },
-                child: const Text('Save Title'),
+                onPressed: _onSubmit,
+                child: const Text('Save Expense'),
               )
             ],
           ),
