@@ -31,6 +31,7 @@ class _ExpenseState extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      useSafeArea: true,
       context: context,
       builder: (ctx) => NewExpense(
         onAddExpense: _addExpense,
@@ -72,6 +73,7 @@ class _ExpenseState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     Widget mainWidget = const Center(
       child: Text('No Expense found!'),
     );
@@ -92,17 +94,28 @@ class _ExpenseState extends State<Expenses> {
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Chart(expenses: _registeredExpenses),
-          Expanded(
-              // since, there is a column is under another column, flutter doesn't know how to
-              // render the view, that's why needs to be wraped using Expanded widget to specify that
-              // the child column will take the parent column's width and size.
-              child: mainWidget),
-        ],
-      ),
+      body: width < 600
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Chart(expenses: _registeredExpenses),
+                Expanded(
+                    // since, there is a column is under another column, flutter doesn't know how to
+                    // render the view, that's why needs to be wraped using Expanded widget to specify that
+                    // the child column will take the parent column's width and size.
+                    child: mainWidget),
+              ],
+            )
+          : Row(children: [
+              Expanded(
+                child: Chart(expenses: _registeredExpenses),
+              ),
+              Expanded(
+                  // since, there is a column is under another column, flutter doesn't know how to
+                  // render the view, that's why needs to be wraped using Expanded widget to specify that
+                  // the child column will take the parent column's width and size.
+                  child: mainWidget),
+            ]),
     );
   }
 }

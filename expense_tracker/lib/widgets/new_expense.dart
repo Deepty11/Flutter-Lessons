@@ -91,91 +91,97 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
-      child: Column(
-        children: [
-          Text(
-            'Add New Expense',
-            style: GoogleFonts.lato(fontSize: 22),
-            textAlign: TextAlign.left,
-          ),
-          TextField(
-            controller: _titleController,
-            decoration: InputDecoration(
-              label: Text(
-                'Title',
-                style: GoogleFonts.lato(fontSize: 14),
-              ),
-            ),
-          ),
-          Row(
+    final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+    return SizedBox(
+      height: double.infinity, // so that modal gets full height of the screen
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 16, keyboardSpace + 16),
+          child: Column(
             children: [
-              Expanded(
-                child: TextField(
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    prefixText: '\$',
-                    label: Text(
-                      'Amount',
-                      style: GoogleFonts.lato(fontSize: 14),
-                    ),
+              Text(
+                'Add New Expense',
+                style: GoogleFonts.lato(fontSize: 22),
+                textAlign: TextAlign.left,
+              ),
+              TextField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  label: Text(
+                    'Title',
+                    style: GoogleFonts.lato(fontSize: 14),
                   ),
                 ),
               ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        prefixText: '\$',
+                        label: Text(
+                          'Amount',
+                          style: GoogleFonts.lato(fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          _dateSelected == null
+                              ? 'Select Date'
+                              : formatter.format(_dateSelected!),
+                        ),
+                        IconButton(
+                          onPressed: _presentCalender,
+                          icon: const Icon(Icons.calendar_month),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
               const SizedBox(
-                width: 16,
+                height: 16,
               ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      _dateSelected == null
-                          ? 'Select Date'
-                          : formatter.format(_dateSelected!),
-                    ),
-                    IconButton(
-                      onPressed: _presentCalender,
-                      icon: const Icon(Icons.calendar_month),
-                    ),
-                  ],
-                ),
-              )
+              Row(
+                children: [
+                  DropdownButton(
+                      value: _selectedCategory,
+                      items: Category.values
+                          .map((category) => DropdownMenuItem(
+                                value: category,
+                                child: Text(
+                                  category.name.toUpperCase(),
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: _onSelectCategory),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _onSubmit,
+                    child: const Text('Save Expense'),
+                  )
+                ],
+              ),
             ],
           ),
-          const SizedBox(
-            height: 16,
-          ),
-          Row(
-            children: [
-              DropdownButton(
-                  value: _selectedCategory,
-                  items: Category.values
-                      .map((category) => DropdownMenuItem(
-                            value: category,
-                            child: Text(
-                              category.name.toUpperCase(),
-                            ),
-                          ))
-                      .toList(),
-                  onChanged: _onSelectCategory),
-              const Spacer(),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: _onSubmit,
-                child: const Text('Save Expense'),
-              )
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
