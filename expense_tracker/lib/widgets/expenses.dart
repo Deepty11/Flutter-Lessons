@@ -1,3 +1,4 @@
+import 'package:expense_tracker/widgets/chart/chart.dart';
 import 'package:expense_tracker/widgets/component/expenses_list.dart';
 import 'package:expense_tracker/model/expense.dart';
 import 'package:expense_tracker/widgets/new_expense.dart';
@@ -94,6 +95,7 @@ class _ExpenseState extends State<Expenses> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Chart(expenses: _registeredExpenses),
           Expanded(
               // since, there is a column is under another column, flutter doesn't know how to
               // render the view, that's why needs to be wraped using Expanded widget to specify that
