@@ -1,4 +1,9 @@
 import 'package:expense_tracker/model/expense.dart';
+import 'package:expense_tracker/widgets/component/amount_field.dart';
+import 'package:expense_tracker/widgets/component/calender_field.dart';
+import 'package:expense_tracker/widgets/component/category_dropdown.dart';
+import 'package:expense_tracker/widgets/component/submit_button.dart';
+import 'package:expense_tracker/widgets/component/title_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -92,97 +97,84 @@ class _NewExpenseState extends State<NewExpense> {
   @override
   Widget build(BuildContext context) {
     final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
-    return SizedBox(
-      height: double.infinity, // so that modal gets full height of the screen
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(16, 16, 16, keyboardSpace + 16),
-          child: Column(
-            children: [
-              Text(
-                'Add New Expense',
-                style: GoogleFonts.lato(fontSize: 22),
-                textAlign: TextAlign.left,
-              ),
-              TextField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  label: Text(
-                    'Title',
-                    style: GoogleFonts.lato(fontSize: 14),
-                  ),
+
+    return LayoutBuilder(builder: (cxt, constraints) {
+      final width = constraints.maxWidth;
+
+      return SizedBox(
+        height: double.infinity, // so that modal gets full height of the screen
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, keyboardSpace + 16),
+            child: Column(
+              children: [
+                Text(
+                  'Add New Expense',
+                  style: GoogleFonts.lato(fontSize: 22),
+                  textAlign: TextAlign.left,
                 ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _amountController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        prefixText: '\$',
-                        label: Text(
-                          'Amount',
-                          style: GoogleFonts.lato(fontSize: 14),
-                        ),
+                if (width >= 600)
+                  Row(
+                    children: [
+                      Expanded(child: TitleField(_titleController)),
+                      const SizedBox(
+                        width: 16,
                       ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          _dateSelected == null
-                              ? 'Select Date'
-                              : formatter.format(_dateSelected!),
-                        ),
-                        IconButton(
-                          onPressed: _presentCalender,
-                          icon: const Icon(Icons.calendar_month),
-                        ),
-                      ],
-                    ),
+                      Expanded(child: AmountField(_amountController)),
+                    ],
                   )
-                ],
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Row(
-                children: [
-                  DropdownButton(
-                      value: _selectedCategory,
-                      items: Category.values
-                          .map((category) => DropdownMenuItem(
-                                value: category,
-                                child: Text(
-                                  category.name.toUpperCase(),
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: _onSelectCategory),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () {
+                else
+                  TitleField(_titleController),
+                if (width >= 600)
+                  Row(
+                    children: [
+                      CalenderField(_dateSelected, _presentCalender),
+                      const Spacer(),
+                      CategoryDropdown(_selectedCategory, _onSelectCategory),
+                    ],
+                  )
+                else
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AmountField(_amountController),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                        child: CalenderField(_dateSelected, _presentCalender),
+                      )
+                    ],
+                  ),
+                const SizedBox(
+                  height: 16,
+                ),
+                if (width >= 600)
+                  SubmitButton(
+                    () {
                       Navigator.pop(context);
                     },
-                    child: const Text('Cancel'),
-                  ),
-                  ElevatedButton(
-                    onPressed: _onSubmit,
-                    child: const Text('Save Expense'),
+                    _onSubmit,
                   )
-                ],
-              ),
-            ],
+                else
+                  Row(
+                    children: [
+                      CategoryDropdown(_selectedCategory, _onSelectCategory),
+                      const Spacer(),
+                      SubmitButton(
+                        () {
+                          Navigator.pop(context);
+                        },
+                        _onSubmit,
+                      )
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
