@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:expense_tracker/model/expense.dart';
 import 'package:expense_tracker/widgets/component/amount_field.dart';
 import 'package:expense_tracker/widgets/component/calender_field.dart';
 import 'package:expense_tracker/widgets/component/category_dropdown.dart';
 import 'package:expense_tracker/widgets/component/submit_button.dart';
 import 'package:expense_tracker/widgets/component/title_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -48,15 +51,8 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
-  void _onSubmit() {
-    final amount = double.tryParse(_amountController.text);
-    //double.tryParse("jj") => null, double.tryParse("1.12") => 1.12
-
-    final isAmountInvalid = amount == null || amount <= 0;
-
-    if (_titleController.text.trim().isEmpty ||
-        isAmountInvalid ||
-        _dateSelected == null) {
+  void _showDialog() {
+    if (Platform.isAndroid) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -73,6 +69,36 @@ class _NewExpenseState extends State<NewExpense> {
           ],
         ),
       );
+    } else {
+      showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: const Text('Invalid Input'),
+          content: const Text(
+              'Please make sure the valid title, amount or catalog is selected'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Ok'),
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  void _onSubmit() {
+    final amount = double.tryParse(_amountController.text);
+    //double.tryParse("jj") => null, double.tryParse("1.12") => 1.12
+
+    final isAmountInvalid = amount == null || amount <= 0;
+
+    if (_titleController.text.trim().isEmpty ||
+        isAmountInvalid ||
+        _dateSelected == null) {
+      _showDialog();
       return;
     }
 
