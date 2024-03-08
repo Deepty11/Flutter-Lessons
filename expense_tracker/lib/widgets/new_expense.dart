@@ -163,10 +163,10 @@ class _NewExpenseState extends State<NewExpense> {
                       CategoryDropdown(_selectedCategory, _onSelectCategory),
                       const Spacer(),
                       SubmitButton(
+                        _onSubmit,
                         () {
                           Navigator.pop(context);
                         },
-                        _onSubmit,
                       )
                     ],
                   ),
