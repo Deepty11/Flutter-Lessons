@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meal_app/models/meal.dart';
+import 'package:meal_app/widgets/meal_item_trait.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class MealItem extends StatelessWidget {
@@ -36,22 +37,51 @@ class MealItem extends StatelessWidget {
                 child: Container(
                   color: Colors.black54,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Column(children: [
-                    Text(
-                      meal.title,
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis, // very long text ...
-                      style: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    )
-                  ]),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          meal.title,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis, // very long text ...
+                          style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          /* since the row is inside the Column and Column is inside the `Positioned`
+                         which has constraints specified, therefore, the this row is also constrained, thus the `Row` inside
+                         `MealItemTrait` will also be constrained, so no need of wrapping it with `Expanded` */
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // duration
+                            MealItemTrait(
+                                iconData: Icons.schedule,
+                                label: '${meal.duration} min'),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            // complexity
+                            MealItemTrait(
+                              iconData: Icons.work,
+                              label: meal.complexityText,
+                            ),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            // affordability
+                            MealItemTrait(
+                                iconData: Icons.attach_money,
+                                label: meal.affordabilityText),
+                          ],
+                        )
+                      ]),
                 )),
           ],
         ),
