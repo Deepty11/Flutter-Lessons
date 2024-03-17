@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class FilterOption extends StatelessWidget {
-  FilterOption({
+  const FilterOption({
     super.key,
     required this.enabled,
     required this.subtitle,
@@ -13,7 +13,7 @@ class FilterOption extends StatelessWidget {
   final bool enabled;
   final String title;
   final String subtitle;
-  void Function(bool val) onChangeValue;
+  final void Function(bool val) onChangeValue;
 
   @override
   Widget build(BuildContext context) {
