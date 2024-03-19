@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meal_app/data/dummy_meals.dart';
 import 'package:meal_app/models/meal.dart';
-import 'package:meal_app/screens/meals.dart';
-import 'package:meal_app/screens/tabs.dart';
 import 'package:meal_app/widgets/filter_option.dart';
-import 'package:meal_app/widgets/main_drawer.dart';
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({
