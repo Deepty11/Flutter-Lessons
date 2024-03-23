@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:meal_app/models/meal.dart';
-import 'package:meal_app/screens/meal_details.dart';
 import 'package:meal_app/widgets/meal_item_trait.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -13,8 +12,13 @@ class MealItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Card(
-      margin: const EdgeInsets.all(8),
+      margin: EdgeInsets.symmetric(
+        horizontal: (screenWidth > 600 ? 200 : 8),
+        vertical: 8,
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -31,7 +35,7 @@ class MealItem extends StatelessWidget {
               placeholder: MemoryImage(kTransparentImage),
               image: NetworkImage(meal.imageUrl),
               fit: BoxFit
-                  .fill, // without setting this to `fill` the width value will not be active
+                  .fitWidth, // without setting this to `fill` the width value will not be active
               width: double.infinity, // take as much as width
               height: 200,
             ),
