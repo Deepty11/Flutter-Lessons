@@ -3,13 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meal_app/data/dummy_categories.dart';
 import 'package:meal_app/provider/favorite_providers.dart';
 import 'package:meal_app/provider/filter_provider.dart';
-import 'package:meal_app/provider/meals_provoider.dart';
 import 'package:meal_app/screens/categories.dart';
 import 'package:meal_app/screens/filter.dart';
 import 'package:meal_app/screens/meals.dart';
 import 'package:meal_app/widgets/main_drawer.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meal_app/provider/filter_provider.dart';
 
 final Map<Filter, bool> kSelectedFilters = {
   Filter.glutenFree: false,
@@ -50,32 +47,9 @@ class _TabsState extends ConsumerState<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final meals = ref.watch(mealProvider);
-    final filters = ref.watch(filterProvider);
-
-    final availableMeals = meals.where((meal) {
-      if (filters[Filter.glutenFree]! && !meal.isGlutenFree) {
-        return false;
-      }
-
-      if (filters[Filter.lactoseFree]! && !meal.isLactoseFree) {
-        return false;
-      }
-
-      if (filters[Filter.vegan]! && !meal.isVegan) {
-        return false;
-      }
-
-      if (filters[Filter.vegetarian]! && !meal.isVegetarian) {
-        return false;
-      }
-
-      return true;
-    }).toList();
-
     Widget activeWidget = CategoriesScreen(
       availableCategories,
-      availableMeals: availableMeals,
+      availableMeals: ref.watch(filteredMealsProvider),
     );
 
     String activeTitle = "Categories";
