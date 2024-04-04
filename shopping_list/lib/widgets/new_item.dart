@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 import 'package:shopping_list/data/dummy_categories.dart';
 import 'package:shopping_list/model/category.dart';
-import 'package:shopping_list/model/grocery_item.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -18,17 +21,31 @@ class _NewItemState extends State<NewItem> {
   int _enteredQuantity = 1;
   Category _selectedCategory = categories[Categories.vegetables]!;
 
-  void _saveItem() {
+  void _saveItem() async {
     // runs validator of the formfields
 
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      final url = Uri.https(
+          'fir-prep-91db6-default-rtdb.firebaseio.com', 'shopping-list.json');
+      final response = await http.post(
+        url,
+        headers: {'Content-type': 'application/json'},
+        body: json.encode(
+          {
+            'name': _enteredName,
+            'quantity': _enteredQuantity,
+            'category': _selectedCategory.title,
+          },
+        ),
+      );
 
-      Navigator.of(context).pop(GroceryItem(
-          id: DateTime.now().toString(),
-          name: _enteredName,
-          category: _selectedCategory,
-          quantity: _enteredQuantity));
+      print(response.body);
+      if (!context.mounted) {
+        return;
+      }
+
+      Navigator.of(context).pop();
     }
   }
 
@@ -78,7 +95,7 @@ class _NewItemState extends State<NewItem> {
                         if (value == null ||
                             value.isEmpty ||
                             int.tryParse(value) == null ||
-                            int.tryParse(value)! <= 1) {
+                            int.tryParse(value)! < 1) {
                           return 'Must be a valid, positive number';
                         }
                         return null;
@@ -95,21 +112,22 @@ class _NewItemState extends State<NewItem> {
                       child: DropdownButtonFormField(
                     value: _selectedCategory,
                     items: categories.entries
-                        .map((e) => DropdownMenuItem(
+                        .map(
+                          (e) => DropdownMenuItem(
                             value: e.value,
-                            child: Expanded(
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 10,
-                                    height: 10,
-                                    color: e.value.color,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(e.value.title),
-                                ],
-                              ),
-                            )))
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 10,
+                                  height: 10,
+                                  color: e.value.color,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(e.value.title),
+                              ],
+                            ),
+                          ),
+                        )
                         .toList(),
                     onChanged: (value) {
                       setState(() {
@@ -135,7 +153,7 @@ class _NewItemState extends State<NewItem> {
                     child: const Text('Save'),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
