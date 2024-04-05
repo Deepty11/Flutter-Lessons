@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shopping_list/data/dummy_categories.dart';
-import 'package:shopping_list/data/dummy_items.dart';
 import 'package:shopping_list/model/category.dart';
 import 'package:shopping_list/model/grocery_item.dart';
 import 'package:shopping_list/widgets/new_item.dart';
@@ -17,6 +16,7 @@ class Groceries extends StatefulWidget {
 
 class _GroceriesState extends State<Groceries> {
   List<GroceryItem> _groceries = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -52,14 +52,17 @@ class _GroceriesState extends State<Groceries> {
 
     setState(() {
       _groceries = list;
+      _isLoading = false;
     });
   }
 
   void _onPressAddButton(BuildContext context) async {
-    await Navigator.of(context)
+    final newItem = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => const NewItem()));
 
-    _loadItem();
+    setState(() {
+      _groceries.add(newItem);
+    });
   }
 
   @override
@@ -71,6 +74,12 @@ class _GroceriesState extends State<Groceries> {
         textAlign: TextAlign.center,
       ),
     );
+
+    if (_isLoading) {
+      activeWidget = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
     activeWidget = _groceries.isEmpty
         ? activeWidget
